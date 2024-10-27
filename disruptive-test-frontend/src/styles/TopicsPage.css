@@ -1,0 +1,67 @@
+/* Estilos para la caja de búsqueda */
+.topic-search {
+    margin-bottom: 20px;
+  }
+  
+  .topic-search input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Estilos para los topics listados en un card */
+  .topic-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .topic-card h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .topic-card .assign-categories {
+    margin-top: 10px;
+  }
+  
+  /* Estilos para la caja de creación de topics */
+  .topic-form {
+    margin-bottom: 20px;
+  }
+  
+  .topic-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .topic-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .topic-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .topic-form button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .topic-form button:hover {
+    background-color: #0056b3;
+  }

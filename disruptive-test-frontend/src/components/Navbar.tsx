@@ -9,7 +9,12 @@ const Navbar: React.FC = () => {
     <nav>
       <ul>
         <li><Link to="/">Home</Link></li>
-        {isAuthenticated && <li><Link to="/categories">Categories</Link></li>}
+        {isAuthenticated && (
+          <>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/topics">Topics</Link></li>
+          </>
+        )}
         {!isAuthenticated ? (
           <>
             <li><Link to="/login">Login</Link></li>

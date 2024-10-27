@@ -15,4 +15,19 @@ export interface Category {
     name: string;
     type: ContentType;
     coverImage?: string;
-  }
+}
+
+export interface Topic {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface CreateTopicDto {
+    name: string;
+}
+
+export interface AssignCategoriesDto {
+    categoryIds: string[];
+}

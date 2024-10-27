@@ -6,7 +6,7 @@ import { ContentType } from '@/enums';
 export class CreateCategoryDto {
   @ApiProperty({
     description: 'The name of the category',
-    example: 'Technology',
+    example: 'Videos',
   })
   @IsString()
   @IsNotEmpty()
