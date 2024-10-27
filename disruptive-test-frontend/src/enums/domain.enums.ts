@@ -9,3 +9,10 @@ export enum ContentType {
     VIDEO = 'VIDEO',
     TEXT = 'TEXT',
 }
+
+export interface Category {
+    id?: string;
+    name: string;
+    type: ContentType;
+    coverImage?: string;
+  }

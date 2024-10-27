@@ -68,17 +68,25 @@ export class UserRepository implements ExtendedUserRepository {
     }
 
     async findByEmailOrUsername(email: string, username: string): Promise<User | null> {
-        return this.prisma.user.findFirst({
-            where: {
-                OR: [
-                    { email: email },
-                    { username: username },
-                ],
-            },
-        });
+        try {
+            return await this.prisma.user.findFirst({
+                where: {
+                    OR: [
+                        { email: email },
+                        { username: username },
+                    ],
+                },
+            });
+        } catch (error) {
+            throw new DatabaseError('Failed to find user by email or username: ' + error.message);
+        }
     }
 
     async findByEmail(email: string): Promise<User | null> {
-        return this.prisma.user.findUnique({ where: { email } });
+        try {
+            return this.prisma.user.findUnique({ where: { email } });
+        } catch (error) {
+            throw new DatabaseError('Failed to find user by email: ' + error.message);
+        }
     }
 }

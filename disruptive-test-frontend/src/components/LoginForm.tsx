@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/auth';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ const LoginForm: React.FC = () => {
     try {
       const { access_token } = await loginUser({ email, password });
       login(access_token);
-      navigate('/'); // Redirect to Home page
+      navigate('/');
     } catch (error) {
       alert('Error logging in');
     }

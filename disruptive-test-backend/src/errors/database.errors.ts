@@ -5,6 +5,13 @@ export class UniqueConstraintViolationError extends Error {
     }
 }
 
+export class CategoryNotFoundError extends Error {
+    constructor(message: string) {
+      super(message);
+      this.name = 'CategoryNotFoundError';
+    }
+  }
+
 export class UserNotFoundError extends Error {
     constructor(message: string) {
         super(message);

@@ -1,0 +1,30 @@
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 0 0 10px 10px; /* Rounded borders only on the bottom side */
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 200px; /* Adjust the width as needed */
+  }
+  
+  .category-card img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .category-card-title {
+    padding: 10px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .category-card-actions {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 10px;
+  }
