@@ -9,6 +9,78 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("MONGO_DB_URL")
+}
+
+// User model with ObjectId and MongoDB-specific configuration
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  email     String   @unique
+  password  String
+  userType  String   // Represents UserType as a string (ADMIN, CREATOR, READER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  contents  Content[] @relation("UserContents")
+}
+
+// Category model with ObjectId and a join table for many-to-many with Topic
+model Category {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String   @unique
+  type       String   // Represents ContentType as a string (IMAGE, VIDEO, TEXT)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  coverImage String?  // Optional cover image field
+
+  // Relationships
+  contents   Content[]        @relation("CategoryContents")
+  topicLinks CategoryTopic[]  @relation("CategoryToTopic") // Link table for many-to-many with Topic
+}
+
+// Topic model with ObjectId and a join table for many-to-many with Category
+model Topic {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relationships
+  contents     Content[]       @relation("TopicContents")
+  categoryLinks CategoryTopic[] @relation("CategoryToTopic") // Link table for many-to-many with Category
+}
+
+// Join model for many-to-many relationship between Category and Topic
+model CategoryTopic {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  categoryId String   @db.ObjectId
+  topicId    String   @db.ObjectId
+
+  // Define relationships to connect Category and Topic
+  category   Category @relation("CategoryToTopic", fields: [categoryId], references: [id])
+  topic      Topic    @relation("CategoryToTopic", fields: [topicId], references: [id])
+
+  // Ensure unique combination of categoryId and topicId
+  @@unique([categoryId, topicId])
+}
+
+// Content model with ObjectId, linking User, Category, and Topic
+model Content {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  type       String   // Represents ContentType as a string (IMAGE, VIDEO, TEXT)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  credits    String   // Alias of the creator
+
+  // Relationships
+  userId     String   @db.ObjectId
+  creator    User     @relation("UserContents", fields: [userId], references: [id])
+  categoryId String   @db.ObjectId
+  category   Category @relation("CategoryContents", fields: [categoryId], references: [id])
+  topicId    String   @db.ObjectId
+  topic      Topic    @relation("TopicContents", fields: [topicId], references: [id])
 }

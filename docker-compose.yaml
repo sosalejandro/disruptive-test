@@ -1,0 +1,113 @@
+services:
+  backend:
+    build:
+      context: ./disruptive-test-backend
+      dockerfile: Dockerfile
+    container_name: disruptive-test-backend
+    env_file:
+      - ./disruptive-test-backend/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./disruptive-test-backend:/app  # Mount the backend folder
+      - ./disruptive-test-backend/node_modules:/app/node_modules  # Use local node_modules
+    depends_on:
+      - mongodb-init
+
+  mongodb-1:
+    image: mongo:latest
+    container_name: mongodb-1
+    command:
+      [
+        "mongod",
+        "--port",
+        "27017",
+        "--replSet",
+        "rs0",
+        "--bind_ip_all",
+        "--keyFile",
+        "/data/configdb/keyfile",
+      ]
+    ports:
+      - "27017:27017"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_REPLICA_SET_KEY=${MONGO_REPLICA_SET_KEY}
+    volumes:
+      - "./init-keyfile.sh:/docker-entrypoint-initdb.d/init-keyfile.sh"
+      - "./data/mongodb-1:/data/db"
+      - "./data/mongodb-1/configdb:/data/configdb"
+
+  mongodb-2:
+    image: mongo:latest
+    container_name: mongodb-2
+    command:
+      [
+        "mongod",
+        "--port",
+        "27018",
+        "--replSet",
+        "rs0",
+        "--bind_ip_all",
+        "--keyFile",
+        "/data/configdb/keyfile",
+      ]
+    ports:
+      - "27018:27018"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    environment:
+      - MONGO_REPLICA_SET_KEY=${MONGO_REPLICA_SET_KEY}
+    volumes:
+      - "./init-keyfile.sh:/docker-entrypoint-initdb.d/init-keyfile.sh"
+      - "./data/mongodb-2:/data/db"
+      - "./data/mongodb-2/configdb:/data/configdb"
+
+  mongodb-3:
+    image: mongo:latest
+    container_name: mongodb-3
+    command:
+      [
+        "mongod",
+        "--port",
+        "27019",
+        "--replSet",
+        "rs0",
+        "--bind_ip_all",
+        "--keyFile",
+        "/data/configdb/keyfile",
+      ]
+    ports:
+      - "27019:27019"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+    environment:
+      - MONGO_REPLICA_SET_KEY=${MONGO_REPLICA_SET_KEY}
+    volumes:
+      - "./init-keyfile.sh:/docker-entrypoint-initdb.d/init-keyfile.sh"
+      - "./data/mongodb-3:/data/db"
+      - "./data/mongodb-3/configdb:/data/configdb"
+
+  mongodb-init:
+    image: mongo:latest
+    container_name: mongodb-init
+    depends_on:
+      - mongodb-1
+      - mongodb-2
+      - mongodb-3
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: bash -c "chmod +x init-replica-set.sh && ./init-replica-set.sh"
+    volumes:
+      - "./init-replica-set.sh:/init-replica-set.sh"
+    restart: no
+
+networks:
+  default:
+    name: mongodb-replica-set-network
