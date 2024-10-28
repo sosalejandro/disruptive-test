@@ -2,11 +2,24 @@
 
 # State
 
-- Project unfinished.
+- **Project unfinished.**
+- **Missing tests and testing of all CRUD operations.**
+- **Main objectives were targeted and functionality at its core was manually tested.**
 
-- Missing tests and testing of all CRUD operations.
+---
 
-- Main objectives were targeted and functionality at its core was manually tested.
+- The project relies on its backend for the Nest.js framework (Express-based). 
+  - Uses a WebSocket implementation for real-time updates on the content collection. 
+  - It was implemented following a layered architecture (Repository, Service, Application). 
+
+- The database configuration was done through `Prisma ORM` with an underlying `mongo` database and the Schema is defined within the `prisma` folder. 
+  - The Prisma configuration relies heavily on a replica set for MongoDB since it uses Mongo transactions, and replication is required for this configuration. 
+  - Therefore, the easiest way to build the solution is through the usage of `docker-compose` which is already configured to manage all of the heavy lifting required to create these instances. 
+
+- The frontend uses the package `socket.io-client` to connect with the backend and its `ws`. 
+  - The frontend relies on 3 contexts to share state across the application: `Topics`, `Categories`, and `Auth`. 
+  - The frontend was built with the `Vite CLI` and uses `yarn`, and it is configured with `TypeScript + SWC`.
+
 
 # Setup
 
