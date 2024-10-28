@@ -85,6 +85,10 @@
     4OYxaTON3AR7evnoEDmY763sf9XrJ8LrbDTuloGQJAcYTXGX"
     ```
 
+## OpenAPI 
+
+The OpenAPI Swagger Spec is found at the following url: `http://localhost:3000/api`, it is available when the backend server is up and running.
+
 ## Frontend Setup
 
 ### Environment Variables
