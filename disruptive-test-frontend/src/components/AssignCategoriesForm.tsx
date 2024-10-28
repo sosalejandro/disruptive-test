@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { assignCategoriesToTopic } from '../api/topics';
-import { CategoryContext } from '../context/CategoryContext';
+import { useCategories } from '../context/CategoryContext';
 import { AssignCategoriesDto } from '../enums/domain.enums';
 
 interface AssignCategoriesFormProps {
@@ -10,7 +10,7 @@ interface AssignCategoriesFormProps {
 
 const AssignCategoriesForm: React.FC<AssignCategoriesFormProps> = ({ topicId, onClose }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const { categories } = useContext(CategoryContext);
+  const { categories, loading, error } = useCategories();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +25,9 @@ const AssignCategoriesForm: React.FC<AssignCategoriesFormProps> = ({ topicId, on
       prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId]
     );
   };
+
+  if (loading) return <p>Loading categories...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <form onSubmit={handleSubmit}>

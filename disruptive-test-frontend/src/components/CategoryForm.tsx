@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { createCategory, updateCategory, getCategoryById } from '../api/categories';
-import { Category, ContentType } from '../enums/domain.enums';
+import { getCategoryById, updateCategory } from '../api/categories';
+import { useCategories } from '../context/CategoryContext';
+import { Category } from '../enums/domain.enums';
 
 interface CategoryFormProps {
   categoryId?: string;
@@ -8,54 +9,89 @@ interface CategoryFormProps {
 }
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ categoryId, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [type, setType] = useState<ContentType>(ContentType.IMAGE);
-  const [coverImage, setCoverImage] = useState('');
+  const { categories, updateCategory: updateCategoryInContext } = useCategories();
+  const [category, setCategory] = useState<Category | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (categoryId) {
-      getCategoryById(categoryId).then((category) => {
-        setName(category.name);
-        setType(category.type);
-        setCoverImage(category.coverImage || '');
-      });
+    const existingCategory = categories.find((cat) => cat.id === categoryId);
+    if (existingCategory) {
+      setCategory(existingCategory);
+      setLoading(false);
+    } else {
+      const fetchCategory = async () => {
+        try {
+          const fetchedCategory = await getCategoryById(categoryId!);
+          setCategory(fetchedCategory);
+        } catch (err) {
+          setError('Failed to fetch category');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCategory();
     }
-  }, [categoryId]);
+  }, [categoryId, categories]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const category: Category = { name, type, coverImage };
-    try {
-      if (categoryId) {
-        await updateCategory(categoryId, category);
-      } else {
-        await createCategory(category);
+    if (category) {
+      try {
+        const updatedCategory = await updateCategory(categoryId!, category);
+        updateCategoryInContext(updatedCategory);
+        onSuccess();
+      } catch (err) {
+        setError('Failed to update category');
       }
-      onSuccess();
-    } catch (error) {
-      console.error('Error saving category:', error);
     }
   };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCategory((prevCategory) => (prevCategory ? { ...prevCategory, [name]: value } : null));
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>Name:</label>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+        <label>
+          Name:
+          <input
+            type="text"
+            name="name"
+            value={category?.name || ''}
+            onChange={handleChange}
+            required
+          />
+        </label>
       </div>
       <div>
-        <label>Type:</label>
-        <select value={type} onChange={(e) => setType(e.target.value as ContentType)}>
-          {Object.values(ContentType).map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+        <label>
+          Type:
+          <input
+            type="text"
+            name="type"
+            value={category?.type || ''}
+            onChange={handleChange}
+            required
+          />
+        </label>
       </div>
       <div>
-        <label>Cover Image URL:</label>
-        <input type="text" value={coverImage} onChange={(e) => setCoverImage(e.target.value)} />
+        <label>
+          Cover Image:
+          <input
+            type="text"
+            name="coverImage"
+            value={category?.coverImage || ''}
+            onChange={handleChange}
+          />
+        </label>
       </div>
       <button type="submit">Save</button>
     </form>

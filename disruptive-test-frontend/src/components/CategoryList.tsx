@@ -1,18 +1,15 @@
 import '../styles/CategoryList.css';
-import React, { useEffect, useState, useContext } from 'react';
-import { getCategories, deleteCategory } from '../api/categories';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { deleteCategory } from '../api/categories';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { useCategories } from '../context/CategoryContext';
 import CategoryCard from './CategoryCard';
-import { Category } from '../enums/domain.enums';
 
 const CategoryList: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, loading, error, setCategories } = useCategories();
   const { isAuthenticated, user } = useContext(AuthContext);
-
-  useEffect(() => {
-    getCategories().then(setCategories);
-  }, []);
+  const navigate = useNavigate();
 
   const handleDelete = async (id: string) => {
     try {
@@ -22,6 +19,9 @@ const CategoryList: React.FC = () => {
       console.error('Error deleting category:', error);
     }
   };
+
+  if (loading) return <p>Loading categories...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div>
@@ -37,7 +37,7 @@ const CategoryList: React.FC = () => {
             title={category.name}
             type={category.type}
             isAdmin={isAuthenticated && user?.role === 'ADMIN'}
-            onEdit={() => window.location.href = `/categories/edit/${category.id}`}
+            onEdit={() => navigate(`/categories/edit/${category.id}`)}
             onDelete={() => handleDelete(category.id!)}
           />
         ))}

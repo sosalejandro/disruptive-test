@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
           <>
             <li><Link to="/categories">Categories</Link></li>
             <li><Link to="/topics">Topics</Link></li>
+            <li><Link to="/contents">Contents</Link></li>
           </>
         )}
         {!isAuthenticated ? (

@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { searchTopicsByName, getTopics } from '../api/topics';
+import { searchTopicsByName } from '../api/topics';
 import TopicsList from './TopicsList';
 import '../styles/TopicsPage.css';
 import { Topic } from '../enums/domain.enums';
+import { useTopics } from '../context/TopicsContext';
 
 const TopicSearch: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [topics, setTopics] = useState<Topic[]>([]);
+  const { topics, loading, error } = useTopics();
+  const [filteredTopics, setFilteredTopics] = useState<Topic[]>([]);
 
   useEffect(() => {
     if (searchTerm === '') {
-      getTopics().then(setTopics);
+      setFilteredTopics(topics);
     } else {
-      searchTopicsByName(searchTerm).then(setTopics);
+      searchTopicsByName(searchTerm).then(setFilteredTopics);
     }
-  }, [searchTerm]);
+  }, [searchTerm, topics]);
+
+  if (loading) return <p>Loading topics...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="topic-search">
@@ -24,7 +29,7 @@ const TopicSearch: React.FC = () => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <TopicsList topics={topics} />
+      <TopicsList topics={filteredTopics} />
     </div>
   );
 };

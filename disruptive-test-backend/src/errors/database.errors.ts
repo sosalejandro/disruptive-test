@@ -32,3 +32,38 @@ export class DatabaseError extends Error {
         this.name = 'DatabaseError';
     }
 }
+
+export class ContentNotFoundException extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ContentNotFoundException';
+    }
+}
+
+export class ContentCreationException extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ContentCreationException';
+    }
+}
+
+export class ContentUpdateException extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ContentUpdateException';
+    }
+}
+
+export class ContentDeletionException extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ContentDeletionException';
+    }
+}
+
+export class CategoryNotAssociatedWithTopicException extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'CategoryNotAssociatedWithTopicException';
+    }
+}

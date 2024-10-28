@@ -31,5 +31,8 @@ COPY . .
 # Expose the Nest.js default port
 EXPOSE 3000
 
+# Expose the WebSocket port (if different)
+EXPOSE 3001
+
 # Start the application in development mode
 CMD ["yarn", "start:dev"]

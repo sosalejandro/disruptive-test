@@ -31,3 +31,15 @@ export interface CreateTopicDto {
 export interface AssignCategoriesDto {
     categoryIds: string[];
 }
+
+export interface Content {
+    id: string;
+    title: string;
+    type: string;
+    createdAt: Date;
+    updatedAt: Date;
+    credits: string;
+    userId: string;
+    categoryId: string;
+    topicId: string;
+  }

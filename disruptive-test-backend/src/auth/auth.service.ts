@@ -4,6 +4,12 @@ import { UsersService } from '../users/users.service';
 import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 
+export type JwtPayload = {
+  username: string;
+  sub: string;
+  role: string;
+};
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
@@ -12,7 +18,7 @@ export class AuthService {
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   // Hash a password before storing it in the database
   async hashPassword(password: string): Promise<string> {
@@ -38,7 +44,7 @@ export class AuthService {
   }
 
   async login(user: Omit<User, 'password'>): Promise<{ access_token: string }> {
-    const payload = { username: user.username, sub: user.id, role: user.userType };
+    const payload: JwtPayload = { username: user.username, sub: user.id, role: user.userType };
     return { access_token: this.jwtService.sign(payload) };
   }
 }

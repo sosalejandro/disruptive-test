@@ -55,9 +55,13 @@ export class CategoryRepository {
   async update(id: string, data: Partial<Category>): Promise<Category> {
     this.logger.log(`Updating category with ID: ${id}`);
     try {
+      // Remove the id field from the data object
+      
+      const { id, ...updateData } = data;
+      this.logger.log(JSON.stringify(updateData));
       const category = await this.prisma.category.update({
         where: { id },
-        data,
+        data: updateData,
       });
       if (!category) {
         this.logger.warn(`Category with ID ${id} not found`);
